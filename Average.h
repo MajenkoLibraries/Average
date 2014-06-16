@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2013, Majenko Technologies
+ * Copyright (c) , Majenko Technologies
  * All rights reserved.
  * 
  * Redistribution and use in source and binary forms, with or without modification, 
@@ -38,6 +38,12 @@
 # include <WProgram.h>
 #endif
 
+#include <math.h>
+
+inline static float sqr(float x) {
+    return x*x;
+}
+
 template <class T> class Average {
     private:
         // Private functions and variables here.  They can only be accessed
@@ -58,8 +64,15 @@ template <class T> class Average {
         T maximum();
         float stddev();
         T get(uint32_t);
+        void leastSquares(float &m, float &b, float &r);
+        int getCount();
+        T predict(int x);
+
 };
 
+template <class T> int Average<T>::getCount() {
+    return _count;
+}
 
 template <class T> Average<T>::Average(uint32_t size) {
     _size = size;
@@ -199,5 +212,42 @@ template <class T> T Average<T>::get(uint32_t index) {
     }
     return _store[index];
 }
- 
+
+template <class T> void Average<T>::leastSquares(float &m, float &c, float &r) {
+    float   sumx = 0.0;                        /* sum of x                      */
+    float   sumx2 = 0.0;                       /* sum of x**2                   */
+    float   sumxy = 0.0;                       /* sum of x * y                  */
+    float   sumy = 0.0;                        /* sum of y                      */
+    float   sumy2 = 0.0;                       /* sum of y**2                   */
+
+    for (int i=0;i<_count;i++)   { 
+        sumx  += i;
+        sumx2 += sqr(i);  
+        sumxy += i * _store[i];
+        sumy  += _store[i];      
+        sumy2 += sqr(_store[i]); 
+    } 
+
+    float denom = (_count * sumx2 - sqr(sumx));
+    if (denom == 0) {
+        // singular matrix. can't solve the problem.
+        m = 0;
+        c = 0;
+        r = 0;
+        return;
+    }
+
+    m = 0 - (_count * sumxy  -  sumx * sumy) / denom;
+    c = (sumy * sumx2  -  sumx * sumxy) / denom;
+    r = (sumxy - sumx * sumy / _count) / sqrt((sumx2 - sqr(sumx)/_count) * (sumy2 - sqr(sumy)/_count));
+}
+
+template <class T> T Average<T>::predict(int x) {
+    float m, c, r;
+    leastSquares(m, c, r); // y = mx + c;
+
+    T y = m * x + c;
+    return y;
+}
+
 #endif
