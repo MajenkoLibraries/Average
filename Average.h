@@ -56,6 +56,7 @@ template <class T> class Average {
         // Public functions and variables.  These can be accessed from
         // outside the class.
         Average(uint32_t size);
+        ~Average();
         float rolling(T entry);
         void push(T entry);
         float mean();
@@ -81,6 +82,10 @@ template <class T> Average<T>::Average(uint32_t size) {
     for (uint32_t i = 0; i < size; i++) {
         _store[i] = 0;
     }
+}
+
+template <class T> Average<T>::~Average() {
+    free(_store);
 }
 
 template <class T> void Average<T>::push(T entry) {
