@@ -95,8 +95,7 @@ template <class T> Average<T>::~Average() {
 template <class T> void Average<T>::push(T entry) {
     if (_count < _size) {                                     // adding new values to array
         _count++;                                             // count number of values in array
-    }
-    else {                                                    // overwriting old values
+    } else {                                                    // overwriting old values
         _sum = _sum -_store[_position];                       // remove old value from _sum
     }
     _store[_position] = entry;                                // store new value in array
@@ -115,7 +114,7 @@ template <class T> float Average<T>::mean() {
     if (_count == 0) {
         return 0;
     }
-    return (float(_sum) / (float)_count);                     // mean calculation based on _sum
+    return ((float)_sum / (float)_count);                     // mean calculation based on _sum
 }
 
 template <class T> T Average<T>::mode() {
