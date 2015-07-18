@@ -64,7 +64,9 @@ template <class T> class Average {
         float mean();
         T mode();
         T minimum();
+        T minimum(int *);
         T maximum();
+        T maximum(int *);
         float stddev();
         T get(uint32_t);
         void leastSquares(float &m, float &b, float &r);
@@ -129,13 +131,13 @@ template <class T> T Average<T>::mode() {
         return 0;
     }
 
-	most = _store[0];
+	most = get(0);
 	mostcount = 1;
 	for(pos = 0; pos < _count; pos++) {
-		current = _store[pos];
+		current = get(pos);
 		currentcount = 0;
 		for(inner = pos + 1; inner < _count; inner++) {
-			if(_store[inner] == current) {
+			if(get(inner) == current) {
 				currentcount++;
 			}
 		}
@@ -155,34 +157,56 @@ template <class T> T Average<T>::mode() {
 }
 
 template <class T> T Average<T>::minimum() {
+    return minimum(NULL);
+}
+
+template <class T> T Average<T>::minimum(int *index) {
 	T minval;
+
+    if (index != NULL) {
+        *index = 0;
+    }
 
     if (_count == 0) {
         return 0;
     }
 
-	minval = _store[0];
+	minval = get(0);
 
 	for(uint32_t i = 0; i < _count; i++) {
-		if(_store[i] < minval) {
-			minval = _store[i];
+		if(get(i) < minval) {
+			minval = get(i);
+            if (index != NULL) { 
+                *index = i;
+            }
 		}
 	}
 	return minval;
 }
 
 template <class T> T Average<T>::maximum() {
+    return maximum(NULL);
+}
+
+template <class T> T Average<T>::maximum(int *index) {
 	T maxval;
+
+    if (index != NULL) {
+        *index = 0;
+    }
 
     if (_count == 0) {
         return 0;
     }
 
-	maxval = _store[0];
+	maxval = get(0);
 
 	for(uint32_t i = 0; i < _count; i++) {
-		if(_store[i] > maxval) {
-			maxval = _store[i];
+		if(get(i) > maxval) {
+			maxval = get(i);
+            if (index != NULL) { 
+                *index = i;
+            }
 		}
 	}
 	return maxval;
@@ -203,7 +227,7 @@ template <class T> float Average<T>::stddev() {
 
 	sum = 0;
 	for(uint32_t i = 0; i < _count; i++) {
-		theta = mu - (float)_store[i];
+		theta = mu - (float)get(i);
 		square = theta * theta;
 		sum += square;
 	}
@@ -229,9 +253,9 @@ template <class T> void Average<T>::leastSquares(float &m, float &c, float &r) {
     for (int i=0;i<_count;i++)   { 
         sumx  += i;
         sumx2 += sqr(i);  
-        sumxy += i * _store[i];
-        sumy  += _store[i];      
-        sumy2 += sqr(_store[i]); 
+        sumxy += i * get(i);
+        sumy  += get(i);      
+        sumy2 += sqr(get(i)); 
     } 
 
     float denom = (_count * sumx2 - sqr(sumx));
