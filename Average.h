@@ -72,6 +72,9 @@ template <class T> class Average {
         void leastSquares(float &m, float &b, float &r);
         int getCount();
         T predict(int x);
+        T sum();
+        void clear();
+        Average<T> &operator=(Average<T> &a);
 
 };
 
@@ -250,7 +253,7 @@ template <class T> void Average<T>::leastSquares(float &m, float &c, float &r) {
     float   sumy = 0.0;                        /* sum of y                      */
     float   sumy2 = 0.0;                       /* sum of y**2                   */
 
-    for (int i=0;i<_count;i++)   { 
+    for (uint32_t i=0;i<_count;i++)   { 
         sumx  += i;
         sumx2 += sqr(i);  
         sumxy += i * get(i);
@@ -278,6 +281,25 @@ template <class T> T Average<T>::predict(int x) {
 
     T y = m * x + c;
     return y;
+}
+
+// Return the sum of all the array items
+template <class T> T Average<T>::sum() {
+    return _sum;
+}
+
+template <class T> void Average<T>::clear() {
+    _count = 0;
+    _sum = 0;
+    _position = 0;
+}
+
+template <class T> Average<T> &Average<T>::operator=(Average<T> &a) {
+    clear();
+    for (int i = 0; i < _size; i++) {
+        push(a.get(i));
+    }
+    return *this;
 }
 
 #endif
