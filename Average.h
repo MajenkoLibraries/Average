@@ -239,10 +239,13 @@ template <class T> float Average<T>::stddev() {
 
 template <class T> T Average<T>::get(uint32_t index) {
     if (index >= _count) {
-        return 0;
+        return -1;
     }
-    int32_t cindex = _position-index;                         // position in circular buffer
-    if (cindex < 0) cindex = _size + cindex;                  // need to loop around for negative cindex
+
+    int32_t start = _position - _count;
+    if (start < 0) start += _size;
+    int32_t cindex = start + index;
+    if (cindex >= _size) cindex -= _size;
     return _store[cindex];
 }
 
