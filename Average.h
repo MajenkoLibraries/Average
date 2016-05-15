@@ -138,7 +138,7 @@ template <class T> T Average<T>::mode() {
 	mostcount = 1;
 	for(pos = 0; pos < _count; pos++) {
 		current = get(pos);
-		currentcount = 0;
+		currentcount = 1;
 		for(inner = pos + 1; inner < _count; inner++) {
 			if(get(inner) == current) {
 				currentcount++;
