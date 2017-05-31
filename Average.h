@@ -244,7 +244,7 @@ template <class T> T Average<T>::get(uint32_t index) {
 
     int32_t start = _position - _count;
     if (start < 0) start += _size;
-    int32_t cindex = start + index;
+    uint32_t cindex = start + index;
     if (cindex >= _size) cindex -= _size;
     return _store[cindex];
 }
