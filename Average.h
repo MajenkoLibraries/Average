@@ -220,7 +220,6 @@ template <class T> float Average<T>::stddev() {
 	float sum;
 	float mu;
 	float theta;
-	int i;
 
     if (_count == 0) {
         return 0;
