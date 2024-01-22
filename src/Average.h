@@ -61,24 +61,24 @@ template <class T> class Average {
         ~Average();
         float rolling(T entry);
         void push(T entry);
-        float mean();
-        T mode();
+        float mean() const;
+        T mode() const;
         T minimum();
         T minimum(int *);
         T maximum();
         T maximum(int *);
-        float stddev();
-        T get(uint32_t);
+        float stddev() const;
+        T get(uint32_t) const;
         void leastSquares(float &m, float &b, float &r);
-        int getCount();
+        int getCount() const;
         T predict(int x);
-        T sum();
+        T sum() const ;
         void clear();
         Average<T> &operator=(Average<T> &a);
 
 };
 
-template <class T> int Average<T>::getCount() {
+template <class T> int Average<T>::getCount() const {
     return _count;
 }
 
@@ -115,14 +115,14 @@ template <class T> float Average<T>::rolling(T entry) {
     return mean();
 }
 
-template <class T> float Average<T>::mean() {
+template <class T> float Average<T>::mean() const {
     if (_count == 0) {
         return 0;
     }
     return ((float)_sum / (float)_count);                     // mean calculation based on _sum
 }
 
-template <class T> T Average<T>::mode() {
+template <class T> T Average<T>::mode() const {
 	uint32_t pos;
 	uint32_t inner;
 	T most;
@@ -215,7 +215,7 @@ template <class T> T Average<T>::maximum(int *index) {
 	return maxval;
 }
 
-template <class T> float Average<T>::stddev() {
+template <class T> float Average<T>::stddev() const {
 	float square;
 	float sum;
 	float mu;
@@ -236,7 +236,7 @@ template <class T> float Average<T>::stddev() {
 	return sqrt(sum/(float)_count);
 }
 
-template <class T> T Average<T>::get(uint32_t index) {
+template <class T> T Average<T>::get(uint32_t index) const {
     if (index >= _count) {
         return -1;
     }
@@ -286,7 +286,7 @@ template <class T> T Average<T>::predict(int x) {
 }
 
 // Return the sum of all the array items
-template <class T> T Average<T>::sum() {
+template <class T> T Average<T>::sum() const {
     return _sum;
 }
 
